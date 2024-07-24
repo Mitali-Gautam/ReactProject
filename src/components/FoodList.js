@@ -9,21 +9,16 @@ function FoodList() {
   
 
  //   const url = `https://api.edamam.com/api/recipes/v2?type=public&app_id=${YOUR_APP_ID}&app_key=${YOUR_APP_KEY}`;
-    const url = 'https://api.edamam.com/api/recipes/v2?type=public&app_id=af36a32f&app_key=99ff91ba127c276412f6237cd4a7bd27&health=alcohol-free';
-    const [foods,setFoods] = useState([]);
-    const [capitalizedArray, setCapitalizedArray] = useState([]);
-
-    const capitalizeFirstCharacter = (inputString) => {
-        console.log(inputString)
-        return inputString.charAt(0).toUpperCase() + inputString.slice(1);
-    }
+    const url = 'https://restcountries.com/v3.1/independent?status=true&fields=name,flags,languages,capital';
+    const [countries,setCountries] = useState([]);
+    const [selectedCountry, setSelectedCountry] = useState(null)
     
     useEffect(() => {
         axios
         .get(url)
         .then(res => {
-           console.log("==")
-           setFoods(res.data.hits)
+           //console.log(res.data)
+          setCountries(res.data)
         })
         .catch(err => {
             console.log(err)
@@ -34,15 +29,19 @@ function FoodList() {
     <div className="recipe-list">
     <h1>Recipe List</h1>
     <ul>
-      {foods.map((food,key) => (
+      {countries.map((country,key) => (
         <li key={key} className="product">
-           <img src={food.recipe.image} alt="recipe 1" />
-          <h2>{food.recipe.label}</h2>
-          <p>{capitalizeFirstCharacter(food.recipe.cuisineType[0])}</p>
-          <p>{capitalizeFirstCharacter(food.recipe.mealType[0])}</p>
+           
+          <h2><a href={`/getCountryDetails/${country.cca2}`}>{country.name.common}</a></h2>
+          <p><b>Capital : {country.capital}</b></p>
+          <img src={country.flags.png} alt="recipe 1" />
+         
         </li>
       ))}
     </ul>
+    {selectedCountry && (
+        <getCountryDetails country={selectedCountry} />
+      )}
   </div>
   )
 }
